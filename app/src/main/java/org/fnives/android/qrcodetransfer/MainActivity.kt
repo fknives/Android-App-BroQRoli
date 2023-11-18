@@ -26,11 +26,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import org.fnives.android.qrcodetransfer.create.CreateQRCode
 import org.fnives.android.qrcodetransfer.intent.LocalIntentTextProvider
 import org.fnives.android.qrcodetransfer.read.ReadQRCode
+import org.fnives.android.qrcodetransfer.storage.LocalAppPreferencesProvider
 import org.fnives.android.qrcodetransfer.ui.theme.QRCodeTransferTheme
 
 
@@ -39,25 +39,27 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            LocalIntentTextProvider(intent) {
-                QRCodeTransferTheme {
-                    var writerSelected by rememberSaveable { mutableStateOf(true) }
-                    // A surface container using the 'background' color from the theme
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colors.background,
-                    ) {
-                        Scaffold(bottomBar = {
-                            NavBar(
-                                writerSelected = writerSelected,
-                                setWriterSelected = { writerSelected = it })
-                        }) {
-                            Box(Modifier.padding(it)) {
-                                AnimatedContent(targetState = writerSelected) { showWriter ->
-                                    if (showWriter) {
-                                        CreateQRCode()
-                                    } else {
-                                        ReadQRCode()
+            LocalAppPreferencesProvider(this) {
+                LocalIntentTextProvider(intent) {
+                    QRCodeTransferTheme {
+                        var writerSelected by rememberSaveable { mutableStateOf(true) }
+                        // A surface container using the 'background' color from the theme
+                        Surface(
+                            modifier = Modifier.fillMaxSize(),
+                            color = MaterialTheme.colors.background,
+                        ) {
+                            Scaffold(bottomBar = {
+                                NavBar(
+                                    writerSelected = writerSelected,
+                                    setWriterSelected = { writerSelected = it })
+                            }) {
+                                Box(Modifier.padding(it)) {
+                                    AnimatedContent(targetState = writerSelected) { showWriter ->
+                                        if (showWriter) {
+                                            CreateQRCode()
+                                        } else {
+                                            ReadQRCode()
+                                        }
                                     }
                                 }
                             }

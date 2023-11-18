@@ -14,6 +14,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.LocalTextStyle
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -31,6 +32,7 @@ import java.time.Duration
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
 import org.fnives.android.qrcodetransfer.create.Base64EncodeCheckbox
+import org.fnives.android.qrcodetransfer.storage.LocalAppPreferences
 import org.fnives.android.qrcodetransfer.toBinaryBitmap
 
 
@@ -49,7 +51,8 @@ fun ReadQRCode() {
 @Composable
 fun QRCodeReader() {
     var readState by remember { mutableStateOf<ReadState?>(null) }
-    var encodeBase64 by remember { mutableStateOf<Boolean>(SequenceProtocol.encodeBase64) }
+    val appPreferences = LocalAppPreferences.current
+    val encodeBase64 by appPreferences.encodeBase64.collectAsState(initial = SequenceProtocol.encodeBase64)
     val textScrollState = rememberScrollState()
 
     Column {
@@ -65,8 +68,8 @@ fun QRCodeReader() {
         Column {
             Base64EncodeCheckbox(encode = encodeBase64, setEncode = {
                 SequenceProtocol.encodeBase64 = it
+                appPreferences.setEncodeBase64(SequenceProtocol.encodeBase64)
                 readState = null
-                encodeBase64 = it
             })
             Column(
                 Modifier

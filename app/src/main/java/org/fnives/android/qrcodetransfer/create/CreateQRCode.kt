@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +21,7 @@ import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +45,7 @@ import kotlinx.coroutines.withContext
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
 import org.fnives.android.qrcodetransfer.intent.LocalIntentText
+import org.fnives.android.qrcodetransfer.storage.LocalAppPreferences
 import org.fnives.android.qrcodetransfer.toBitmap
 
 
@@ -151,9 +152,10 @@ fun QRCodeContentInput(
 ) {
     val messageFromIntent = LocalIntentText.current
     var content by rememberSaveable(messageFromIntent) { mutableStateOf(messageFromIntent.orEmpty()) }
-    var number by rememberSaveable { mutableStateOf(SequenceProtocol.versionCode) }
+    val appPreferences = LocalAppPreferences.current
+    val number by appPreferences.versionCode.collectAsState(initial = SequenceProtocol.versionCode)
     SequenceProtocol.versionCode = number
-    var encodeBase64 by rememberSaveable { mutableStateOf(SequenceProtocol.encodeBase64) }
+    val encodeBase64 by appPreferences.encodeBase64.collectAsState(initial = SequenceProtocol.encodeBase64)
     SequenceProtocol.encodeBase64 = encodeBase64
     val keyboardController = LocalSoftwareKeyboardController.current
     val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
@@ -198,13 +200,14 @@ fun QRCodeContentInput(
     ) {
         Column {
             QRCodeVersionNumberDropdown(number, setVersionNumber = {
-                number = it
+                // protocol does additional checks so we follow it's lead
                 SequenceProtocol.versionCode = it
+                appPreferences.setVersionCode(SequenceProtocol.versionCode)
                 createBitmaps()
             })
             Base64EncodeCheckbox(encode = encodeBase64, setEncode = {
-                encodeBase64 = it
                 SequenceProtocol.encodeBase64 = it
+                appPreferences.setEncodeBase64(SequenceProtocol.encodeBase64)
                 createBitmaps()
             })
         }
