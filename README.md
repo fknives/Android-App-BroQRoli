@@ -4,7 +4,7 @@
 
 Small QR code sharing app, which breaks long strings into multiple QR codes in a naive way.
 
-Use it as-is.
+Use it as is.
 
 ## License
 [License file](./LICENSE)
