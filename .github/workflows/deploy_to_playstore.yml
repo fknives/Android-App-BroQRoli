@@ -1,0 +1,53 @@
+name: Deploy to Play Store Internal
+
+on:
+  workflow_dispatch:
+    inputs:
+      skipBuildNumberIncrease:
+        description: 'Skip automatic build number increase'
+        type: boolean
+        default: false
+
+jobs:
+  android-publish-to-play-store:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Ruby & Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.2.1'
+          bundler-cache: true
+          working-directory: ./android
+      - name: Setup Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'adopt'
+          java-version: '11'
+          # caching currently disabled, because the files are large, but don't decrease built time too much
+          #cache: gradle
+
+      - name: Restore Release Keystore
+        env:
+          keystore_base64: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_BASE64 }}
+        run: |
+          echo "$keystore_base64" | base64 --decode > release.keystore
+          echo "BROQROLI_KEYSTORE=`pwd`/release.keystore" >> $GITHUB_ENV
+      - name: Restore PlayStore Service Account
+        env:
+          play_store_service_account_json: ${{ secrets.BROQROLI_ANDROID_PLAY_STORE_AUTH_JSON }}
+        run: |
+          echo "$play_store_service_account_base64" > play-store-distribution-service-account.json
+          echo "BROQROLI_ANDROID_PLAY_STORE_AUTH_FILE=`pwd`/play-store-distribution-service-account.json" >> $GITHUB_ENV
+
+      - name: Deploy to Play Store Internal Track
+        env:
+          BROQROLI_KEY: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_KEY_ALIAS }}
+          BROQROLI_PASS: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_KEY_PASSWORD }}
+          BROQROLI_KEY_PASS: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_STORE_PASSWORD }}
+        working-directory: ./android
+        run: bundle exec fastlane deployProdToPlayStore skip_build_number_increase:${{ github.event.inputs.skipBuildNumberIncrease }}
