@@ -51,7 +51,7 @@ fun QRCodeVersionNumberDropdown(versionNumber: Int, setVersionNumber: (Int) -> U
                 }) {
                     val text = if (versionNumber == value) {
                         stringResource(id = R.string.selected_version_number, value)
-                    } else if (value == 14) {
+                    } else if (value == 13) {
                         stringResource(id = R.string.recommended_max, value)
                     } else {
                         "$value"

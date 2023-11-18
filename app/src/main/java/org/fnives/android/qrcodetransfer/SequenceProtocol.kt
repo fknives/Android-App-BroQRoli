@@ -49,10 +49,7 @@ object SequenceProtocol {
         val formatWithLength = format.replace(formatLength, chunks.size.toChar())
         val messages = chunks.mapIndexed { index, s ->
             val prefix = formatWithLength.replace(formatCurrent, index.toChar())
-            "${prefix}${s}".also {
-                println("MYLOG${index} $it")
-                println("MYLOG$it")
-            }
+            "${prefix}${s}"
         }
         return messages.map {
             encode(it)
@@ -117,7 +114,7 @@ object SequenceProtocol {
                 EncodeHintType.CHARACTER_SET to CharacterSetECI.ASCII,
                 EncodeHintType.ERROR_CORRECTION to ErrorCorrectionLevel.M,
                 EncodeHintType.QR_VERSION to versionCode,
-                EncodeHintType.MARGIN to max(versionCode / 2, 3)
+                EncodeHintType.MARGIN to max(versionCode / 3, 3)
             )
         )
     }

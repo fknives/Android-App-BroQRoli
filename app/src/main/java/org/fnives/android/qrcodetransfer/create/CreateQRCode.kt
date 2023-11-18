@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
+import org.fnives.android.qrcodetransfer.intent.LocalIntentText
 import org.fnives.android.qrcodetransfer.toBitmap
 
 
@@ -148,7 +149,8 @@ fun QRCodeContentInput(
     setLoading: (Boolean) -> Unit,
     setBitmaps: (List<Bitmap>) -> Unit,
 ) {
-    var content by rememberSaveable { mutableStateOf("") }
+    val messageFromIntent = LocalIntentText.current
+    var content by rememberSaveable(messageFromIntent) { mutableStateOf(messageFromIntent.orEmpty()) }
     var number by rememberSaveable { mutableStateOf(SequenceProtocol.versionCode) }
     SequenceProtocol.versionCode = number
     var encodeBase64 by rememberSaveable { mutableStateOf(SequenceProtocol.encodeBase64) }
