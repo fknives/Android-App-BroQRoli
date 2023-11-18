@@ -17,7 +17,9 @@
             android:name=".MainActivity"
             android:exported="true"
             android:windowSoftInputMode="adjustResize"
-            android:theme="@style/Theme.QRCodeTransfer">
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.QRCodeTransfer"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
