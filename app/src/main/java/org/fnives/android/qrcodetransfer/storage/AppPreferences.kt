@@ -1,5 +1,6 @@
 package org.fnives.android.qrcodetransfer.storage
 
+import android.annotation.SuppressLint
 import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -55,8 +56,11 @@ val LocalAppPreferences = compositionLocalOf<AppPreferences> {
     error("CompositionLocal LocalIntentText not present")
 }
 
+@SuppressLint("StaticFieldLeak")
+private var appPreferences: AppPreferences? = null
+
 @Composable
 fun LocalAppPreferencesProvider(context: Context, content: @Composable () -> Unit) {
-    val preferences = remember(context) { AppPreferences(context) }
+    val preferences = appPreferences ?: AppPreferences(context.applicationContext).also { appPreferences = it }
     CompositionLocalProvider(LocalAppPreferences provides preferences, content = content)
 }
