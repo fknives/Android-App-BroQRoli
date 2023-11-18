@@ -1,8 +1,6 @@
 package org.fnives.android.qrcodetransfer
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContent
@@ -32,7 +30,6 @@ import org.fnives.android.qrcodetransfer.intent.LocalIntentTextProvider
 import org.fnives.android.qrcodetransfer.read.ReadQRCode
 import org.fnives.android.qrcodetransfer.storage.LocalAppPreferencesProvider
 import org.fnives.android.qrcodetransfer.ui.theme.QRCodeTransferTheme
-
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,13 +64,6 @@ class MainActivity : ComponentActivity() {
                     }
                 }
             }
-        }
-    }
-
-    override fun onNewIntent(intent: Intent?) {
-        super.onNewIntent(intent)
-        intent?.getStringExtra(Intent.EXTRA_TEXT)?.let { url ->
-            Toast.makeText(this, "onNewIntent: url", Toast.LENGTH_SHORT).show()
         }
     }
 }
