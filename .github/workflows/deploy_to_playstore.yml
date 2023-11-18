@@ -41,7 +41,7 @@ jobs:
         env:
           play_store_service_account_json: ${{ secrets.BROQROLI_ANDROID_PLAY_STORE_AUTH_JSON }}
         run: |
-          echo "$play_store_service_account_base64" > play-store-distribution-service-account.json
+          echo "$play_store_service_account_json" > play-store-distribution-service-account.json
           echo "BROQROLI_ANDROID_PLAY_STORE_AUTH_FILE=`pwd`/play-store-distribution-service-account.json" >> $GITHUB_ENV
 
       - name: Deploy to Play Store Internal Track
