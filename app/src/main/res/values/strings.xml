@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">QRCodeTransfer</string>
+
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="create">Create</string>
+    <string name="version_number">Version %1$d</string>
+    <string name="selected_version_number">%1$d (Selected)</string>
+    <string name="recommended_max">%1$d (Recommended Max)</string>
+    <string name="encode_base64">Encode in Base64</string>
+    <string name="camera_required">Camera Permission is required!</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="allow">Allow</string>
+    <string name="content_read_partial">Content read so far:</string>
+    <string name="content_read">Content read:</string>
+    <string name="next_qr_code">Navigate to %1$s QR Code</string>
+    <string name="qr_code_content">QRCode Content</string>
+    <string name="copy">Copy</string>
+    <string name="open">Open</string>
+    <string name="read_qr_code">Scan QR Code</string>
+    <string name="create_qr_code">Create QR Code</string>
+</resources>
