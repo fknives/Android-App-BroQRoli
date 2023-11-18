@@ -14,11 +14,14 @@ import android.graphics.Color
 import android.icu.text.MessageFormat
 import android.net.Uri
 import android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.LuminanceSource
 import com.google.zxing.RGBLuminanceSource
 import com.google.zxing.common.BitMatrix
 import com.google.zxing.common.HybridBinarizer
+import java.io.File
 import java.util.Locale
 
 
@@ -60,8 +63,8 @@ fun Int.toOrdinal(): String {
 }
 
 fun Context.copyToClipboard(text: String) {
-    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager;
-    val clipData = ClipData.newPlainText("label", text);
+    val clipboard = getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+    val clipData = ClipData.newPlainText("label", text)
     clipboard.setPrimaryClip(clipData)
 }
 
@@ -76,4 +79,50 @@ fun Context.openLink(link: String) {
     } catch (ignored: Throwable) {
 
     }
+}
+
+private val Context.sharedDir: File
+    get() {
+        // must be the same as in filepaths.xml!
+        val cachePath = File(cacheDir, "shared")
+        cachePath.mkdirs()
+        return cachePath
+    }
+
+private val Context.sharedFile: File
+    get() {
+        // must be the same as in filepaths.xml!
+        return File(sharedDir, "qrcode.jpg")
+    }
+
+private fun Context.bitmapToSharedFile(bitmap: Bitmap): Boolean {
+    try {
+        sharedFile.createNewFile()
+        sharedFile.outputStream().use { stream ->
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
+        }
+        return true
+    } catch (e: Throwable) {
+        e.printStackTrace()
+        return false
+    }
+}
+
+private fun Context.shareQRCodeImageFile() {
+    // must be the same as in manifest.xml!
+    val contentUri = FileProvider.getUriForFile(this, "${packageName}.fileprovider", sharedFile)
+        ?: return
+
+    val shareIntent = Intent()
+    shareIntent.action = Intent.ACTION_SEND
+    shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // temp permission for receiving app to read this file
+    shareIntent.setDataAndType(contentUri, contentResolver.getType(contentUri))
+    shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+    val chooserIntent = Intent.createChooser(shareIntent, ContextCompat.getString(this, R.string.share))
+    ContextCompat.startActivity(this, chooserIntent, null)
+}
+
+fun Context.shareBitmap(bitmap: Bitmap) {
+    bitmapToSharedFile(bitmap)
+    shareQRCodeImageFile()
 }

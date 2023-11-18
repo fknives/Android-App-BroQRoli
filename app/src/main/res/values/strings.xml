@@ -19,4 +19,5 @@
     <string name="open">Open</string>
     <string name="read_qr_code">Scan QR Code</string>
     <string name="create_qr_code">Create QR Code</string>
+    <string name="share">Share QR Code</string>
 </resources>

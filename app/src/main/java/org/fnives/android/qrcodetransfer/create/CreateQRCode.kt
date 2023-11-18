@@ -2,6 +2,7 @@ package org.fnives.android.qrcodetransfer.create
 
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -45,6 +47,7 @@ import kotlinx.coroutines.withContext
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
 import org.fnives.android.qrcodetransfer.intent.LocalIntentText
+import org.fnives.android.qrcodetransfer.shareBitmap
 import org.fnives.android.qrcodetransfer.storage.LocalAppPreferences
 import org.fnives.android.qrcodetransfer.toBitmap
 
@@ -87,6 +90,7 @@ fun QRCodeCarousel(
     bitmapIndex: Int,
     setBitmapIndex: (Int) -> Unit
 ) {
+    val context = LocalContext.current
     Column(Modifier.fillMaxSize()) {
         val imageBitmap = remember(bitmaps, bitmapIndex) {
             if (bitmapIndex < bitmaps.size) {
@@ -100,7 +104,8 @@ fun QRCodeCarousel(
             Image(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxWidth(),
+                    .fillMaxWidth()
+                    .clickable { context.shareBitmap(bitmaps[bitmapIndex]) },
                 bitmap = imageBitmap,
                 contentDescription = "",
                 contentScale = ContentScale.Fit
