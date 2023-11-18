@@ -22,7 +22,6 @@ jobs:
         with:
           ruby-version: '3.2.1'
           bundler-cache: true
-          working-directory: ./android
       - name: Setup Java
         uses: actions/setup-java@v3
         with:
@@ -49,5 +48,4 @@ jobs:
           BROQROLI_KEY: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_KEY_ALIAS }}
           BROQROLI_PASS: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_KEY_PASSWORD }}
           BROQROLI_KEY_PASS: ${{ secrets.BROQROLI_ANDROID_KEYSTORE_STORE_PASSWORD }}
-        working-directory: ./android
         run: bundle exec fastlane deployProdToPlayStore skip_build_number_increase:${{ github.event.inputs.skipBuildNumberIncrease }}
