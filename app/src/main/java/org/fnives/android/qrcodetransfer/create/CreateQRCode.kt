@@ -166,11 +166,12 @@ fun QRCodeContentInput(
     val coroutineScope = rememberCoroutineScope { Dispatchers.IO }
     val holder = remember(coroutineScope) { JobHolder(null) }
 
-    val createBitmaps = remember(bitmaps, content) {
+    val createBitmaps = remember(bitmaps, content, SequenceProtocol.versionCode, SequenceProtocol.encodeBase64) {
         return@remember fun() {
             if (content.isBlank()) return
             keyboardController?.hide()
             setLoading(true)
+            setBitmaps(emptyList())
             holder.cancel()
             holder.job = coroutineScope.launch {
                 val matrix = SequenceProtocol.createBitMatrix(content)
