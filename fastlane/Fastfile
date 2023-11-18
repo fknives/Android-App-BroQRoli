@@ -54,7 +54,11 @@ platform :android do
             "versionCode" => version_code
         }
     )
-    production_aab = lane_context[SharedValues::GRADLE_ALL_AAB_OUTPUT_PATHS].find{ |i| i[/app-*release*.aab/] }
+    production_aab = lane_context[SharedValues::GRADLE_AAB_OUTPUT_PATH]
+    mapping_file_path = lane_context[SharedValues::GRADLE_MAPPING_TXT_OUTPUT_PATH]
+
+    native_debug_symbols_path = "./native_debug_symbols.zip"
+    zipReleaseNativeSymbols(output_path: native_debug_symbols_path)
 
     upload_to_play_store(
         track: 'internal',
@@ -63,6 +67,23 @@ platform :android do
         json_key: PLAY_STORE_AUTH_FILE,
         skip_upload_apk: true,
         package_name: package_name,
+        mapping_paths: [mapping_file_path, native_debug_symbols_path]
     )
+   end
+
+   desc "Zip the native_debug_symbols"
+   desc "By default zips the release version"
+   desc ">You may change the file name and build_type_and_flavour via:"
+   desc "```sh"
+   desc "[bundle exec] fastlane zipReleaseNativeSymbols output_path:./new.zip build_type_and_flavour:stagingRelease"
+   desc "```"
+   lane :zipReleaseNativeSymbols do |options|
+     # ref https://github.com/fastlane/fastlane/issues/21064
+     output_path = options[:output_path] || './native_debug_symbols.zip'
+     build_type_and_flavour = options[:build_type_and_flavour] || 'release'
+     symbolsFilePath = File.join(Dir.pwd, "..", output_path)
+     symbolsFolderPath = File.join(Dir.pwd, "..", "app/build/intermediates/merged_native_libs",build_type_and_flavour,"out/lib")
+
+     system("cd #{symbolsFolderPath} && zip -r #{symbolsFilePath} .")
    end
 end

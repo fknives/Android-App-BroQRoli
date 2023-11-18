@@ -33,6 +33,24 @@ By Default it sets the version_code to last from PlayStore + 1.
 
 ```
 
+### android zipReleaseNativeSymbols
+
+```sh
+[bundle exec] fastlane android zipReleaseNativeSymbols
+```
+
+Zip the native_debug_symbols
+
+By default zips the release version
+
+>You may change the file name and build_type_and_flavour via:
+
+```sh
+
+[bundle exec] fastlane zipReleaseNativeSymbols output_path:./new.zip build_type_and_flavour:stagingRelease
+
+```
+
 ----
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
