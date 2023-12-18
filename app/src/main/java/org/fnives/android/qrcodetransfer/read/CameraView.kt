@@ -42,7 +42,7 @@ fun interface PreviewProcessor {
 
 @Composable
 fun CameraView(
-    interval: Duration,
+    intervalInMillis: Long,
     processImage: PreviewProcessor,
     backgroundColor: Color = Color.Black,
 ) {
@@ -74,7 +74,7 @@ fun CameraView(
 
                     bitmapReaderScope.launch {
                         while (isActive) {
-                            delay(interval.toMillis())
+                            delay(intervalInMillis)
                             bitmapStream.value = bitmap
                         }
                     }
