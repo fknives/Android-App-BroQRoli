@@ -1,8 +1,11 @@
 package org.fnives.android.qrcodetransfer
 
+import android.app.Activity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -26,8 +29,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import org.fnives.android.qrcodetransfer.create.CreateQRCode
-import org.fnives.android.qrcodetransfer.intent.LocalIntentTextProvider
+import org.fnives.android.qrcodetransfer.intent.LocalIntentImageUri
+import org.fnives.android.qrcodetransfer.intent.LocalIntentProvider
 import org.fnives.android.qrcodetransfer.read.ReadQRCode
+import org.fnives.android.qrcodetransfer.read.image.ImageReadQRCode
 import org.fnives.android.qrcodetransfer.storage.LocalAppPreferencesProvider
 import org.fnives.android.qrcodetransfer.ui.theme.QRCodeTransferTheme
 
@@ -37,31 +42,46 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             LocalAppPreferencesProvider(this) {
-                LocalIntentTextProvider(intent) {
+                LocalIntentProvider(intent) {
                     QRCodeTransferTheme {
-                        var writerSelected by rememberSaveable { mutableStateOf(true) }
                         // A surface container using the 'background' color from the theme
                         Surface(
                             modifier = Modifier.fillMaxSize(),
                             color = MaterialTheme.colors.background,
                         ) {
-                            Scaffold(bottomBar = {
-                                NavBar(
-                                    writerSelected = writerSelected,
-                                    setWriterSelected = { writerSelected = it })
-                            }) {
-                                Box(Modifier.padding(it)) {
-                                    AnimatedContent(targetState = writerSelected) { showWriter ->
-                                        if (showWriter) {
-                                            CreateQRCode()
-                                        } else {
-                                            ReadQRCode()
-                                        }
+                            val intentImage = LocalIntentImageUri.current
+                            if (intentImage != null) {
+                                ImageReadQRCode(intentImage,
+                                    onErrorLoadingFile = {
+                                        showToast(R.string.could_not_read_content)
+                                        finishAfterTransition()
                                     }
-                                }
+                                )
+                            } else {
+                                NormalState()
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun NormalState() {
+    var writerSelected by rememberSaveable { mutableStateOf(true) }
+    Scaffold(bottomBar = {
+        NavBar(
+            writerSelected = writerSelected,
+            setWriterSelected = { writerSelected = it })
+    }) {
+        Box(Modifier.padding(it)) {
+            AnimatedContent(targetState = writerSelected) { showWriter ->
+                if (showWriter) {
+                    CreateQRCode()
+                } else {
+                    ReadQRCode()
                 }
             }
         }
@@ -85,4 +105,12 @@ fun NavBar(writerSelected: Boolean, setWriterSelected: (Boolean) -> Unit) {
             label = { Text(stringResource(id = R.string.read_qr_code)) },
         )
     }
+}
+
+private fun Activity.showToast(@StringRes stringRes: Int) {
+    Toast.makeText(
+        this,
+        getString(stringRes),
+        Toast.LENGTH_LONG
+    ).show()
 }

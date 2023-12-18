@@ -13,9 +13,11 @@
     <string name="allow">Allow</string>
     <string name="content_read_partial">Content read so far:</string>
     <string name="content_read">Content read:</string>
+    <string name="could_not_read_content">Content could not be parsed.</string>
     <string name="next_qr_code">Navigate to %1$s QR Code</string>
     <string name="qr_code_content">QRCode Content</string>
     <string name="copy">Copy</string>
+    <string name="copy_raw">Copy Raw</string>
     <string name="open">Open</string>
     <string name="read_qr_code">Scan QR Code</string>
     <string name="create_qr_code">Create QR Code</string>

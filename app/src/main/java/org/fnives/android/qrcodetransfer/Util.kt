@@ -37,11 +37,16 @@ fun BitMatrix.toBitmap(): Bitmap {
 }
 
 fun Bitmap.toBinaryBitmap(): BinaryBitmap {
+    val bitmap = if (this.config != Bitmap.Config.ARGB_8888) {
+        this.copy(Bitmap.Config.ARGB_8888, false)
+    } else {
+        this
+    }
     //copy pixel data from the Bitmap into the 'intArray' array
-    val intArray = IntArray(width * height)
-    getPixels(intArray, 0, width, 0, 0, width, height)
+    val intArray = IntArray(bitmap.width * bitmap.height)
+    bitmap.getPixels(intArray, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
 
-    val source: LuminanceSource = RGBLuminanceSource(width, height, intArray)
+    val source: LuminanceSource = RGBLuminanceSource(bitmap.width, bitmap.height, intArray)
 
     return BinaryBitmap(HybridBinarizer(source))
 }
