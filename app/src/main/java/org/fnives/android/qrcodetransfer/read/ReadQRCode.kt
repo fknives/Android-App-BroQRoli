@@ -28,10 +28,10 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
-import java.time.Duration
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
 import org.fnives.android.qrcodetransfer.create.Base64EncodeCheckbox
+import org.fnives.android.qrcodetransfer.read.parsed.DataFormatter
 import org.fnives.android.qrcodetransfer.storage.LocalAppPreferences
 import org.fnives.android.qrcodetransfer.toBinaryBitmap
 
@@ -88,7 +88,7 @@ fun QRCodeReader() {
                         modifier = Modifier
                             .heightIn(max = 128.dp)
                             .verticalScroll(textScrollState),
-                        text = readState?.currentText.orEmpty(),
+                        text = DataFormatter.receivedDataFormatter(readState?.currentText.orEmpty()),
                     )
                 }
 
