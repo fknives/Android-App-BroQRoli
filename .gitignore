@@ -18,3 +18,5 @@ local.properties
 *.jks
 *.signingconfig
 *auth.json
+native_debug_symbols.zip
+*/report.xml
