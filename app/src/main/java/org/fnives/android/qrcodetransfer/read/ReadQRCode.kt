@@ -61,7 +61,7 @@ fun QRCodeReader() {
                 .weight(1f)
                 .fillMaxWidth(),
         ) {
-            CameraView(interval = Duration.ofSeconds(1), processImage = {
+            CameraView(intervalInMillis = 1000L, processImage = {
                 readState = processImage(it, readState)
             })
         }
