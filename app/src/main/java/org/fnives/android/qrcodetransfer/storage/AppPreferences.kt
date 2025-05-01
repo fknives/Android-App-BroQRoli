@@ -5,7 +5,6 @@ import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
-import androidx.compose.runtime.remember
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
@@ -61,6 +60,7 @@ private var appPreferences: AppPreferences? = null
 
 @Composable
 fun LocalAppPreferencesProvider(context: Context, content: @Composable () -> Unit) {
-    val preferences = appPreferences ?: AppPreferences(context.applicationContext).also { appPreferences = it }
+    val preferences =
+        appPreferences ?: AppPreferences(context.applicationContext).also { appPreferences = it }
     CompositionLocalProvider(LocalAppPreferences provides preferences, content = content)
 }
