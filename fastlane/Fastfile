@@ -82,7 +82,7 @@ platform :android do
      output_path = options[:output_path] || './native_debug_symbols.zip'
      build_type_and_flavour = options[:build_type_and_flavour] || 'release'
      symbolsFilePath = File.join(Dir.pwd, "..", output_path)
-     symbolsFolderPath = File.join(Dir.pwd, "..", "app/build/intermediates/merged_native_libs",build_type_and_flavour,"out/lib")
+     symbolsFolderPath = File.join(Dir.pwd, "..", "app/build/intermediates/merged_native_libs",build_type_and_flavour,"mergeReleaseNativeLibs/out/lib")
 
      system("cd #{symbolsFolderPath} && zip -r #{symbolsFilePath} .")
    end
