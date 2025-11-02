@@ -1,6 +1,6 @@
 package org.fnives.android.qrcodetransfer.read.parsed
 
-import org.fnives.android.qrcodetransfer.BuildConfig
+import org.fnives.android.qrcodetransfer.config.BuildConfig
 
 object WiFiInfoFormatter {
 
@@ -14,14 +14,14 @@ object WiFiInfoFormatter {
     fun tryToParse(data: String): WifiInfo? {
         if (data.startsWith(PREFIX)) {
             try {
-                val result = data.drop(PREFIX.length).split(";").map {
+                val result = data.drop(PREFIX.length).split(";").associate {
                     if (it.contains(":")) {
                         val (key, value) = it.split(":")
                         key to value
                     } else {
                         EXTRA_KEY to it
                     }
-                }.toMap()
+                }
 
                 return WifiInfo(
                     name = result[NAME_KEY]
@@ -33,7 +33,7 @@ object WiFiInfoFormatter {
                     hidden = result[HIDDEN_KEY] == "true",
                 )
             } catch (ignored: Throwable) {
-                if (BuildConfig.DEBUG) {
+                if (BuildConfig.isDebug) {
                     ignored.printStackTrace()
                 }
                 return null

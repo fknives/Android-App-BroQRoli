@@ -27,9 +27,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.TextUnitType
 import androidx.compose.ui.unit.dp
-import org.fnives.android.qrcodetransfer.BuildConfig
 import org.fnives.android.qrcodetransfer.R
 import org.fnives.android.qrcodetransfer.SequenceProtocol
+import org.fnives.android.qrcodetransfer.config.BuildConfig
 import org.fnives.android.qrcodetransfer.create.Base64EncodeCheckbox
 import org.fnives.android.qrcodetransfer.read.ActionRow
 import org.fnives.android.qrcodetransfer.read.parsed.DataFormatter
@@ -55,7 +55,7 @@ fun ImageReadQRCode(imageUri: Uri, onErrorLoadingFile: () -> Unit) {
         try {
             SequenceProtocol.read(imageBitmap.toBinaryBitmap())?.sequenceInfo?.content
         } catch (ignored: Throwable) {
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.isDebug) {
                 ignored.printStackTrace()
             }
             null

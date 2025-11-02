@@ -8,6 +8,7 @@ import com.google.zxing.common.CharacterSetECI
 import com.google.zxing.qrcode.QRCodeReader
 import com.google.zxing.qrcode.QRCodeWriter
 import com.google.zxing.qrcode.decoder.ErrorCorrectionLevel
+import org.fnives.android.qrcodetransfer.config.BuildConfig
 import kotlin.io.encoding.Base64
 import kotlin.io.encoding.ExperimentalEncodingApi
 import kotlin.math.max
@@ -98,7 +99,7 @@ object SequenceProtocol {
         try {
             reader.decode(binaryBitmap)
         } catch (e: Throwable) {
-            if (BuildConfig.DEBUG) {
+            if (BuildConfig.isDebug) {
                 e.printStackTrace()
             }
             null

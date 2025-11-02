@@ -123,8 +123,9 @@ private fun Context.shareQRCodeImageFile() {
     shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION) // temp permission for receiving app to read this file
     shareIntent.setDataAndType(contentUri, contentResolver.getType(contentUri))
     shareIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-    val chooserIntent = Intent.createChooser(shareIntent, ContextCompat.getString(this, R.string.share))
-    ContextCompat.startActivity(this, chooserIntent, null)
+    val chooserIntent =
+        Intent.createChooser(shareIntent, ContextCompat.getString(this, R.string.share))
+    startActivity(chooserIntent, null)
 }
 
 fun Context.shareBitmap(bitmap: Bitmap) {

@@ -7,10 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.StringRes
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
@@ -21,6 +25,7 @@ import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.primarySurface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +33,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import org.fnives.android.qrcodetransfer.create.CreateQRCode
 import org.fnives.android.qrcodetransfer.intent.LocalIntentImageUri
 import org.fnives.android.qrcodetransfer.intent.LocalIntentProvider
@@ -51,7 +57,8 @@ class MainActivity : ComponentActivity() {
                         ) {
                             val intentImage = LocalIntentImageUri.current
                             if (intentImage != null) {
-                                ImageReadQRCode(intentImage,
+                                ImageReadQRCode(
+                                    intentImage,
                                     onErrorLoadingFile = {
                                         showToast(R.string.could_not_read_content)
                                         finishAfterTransition()
@@ -73,6 +80,9 @@ fun NormalState() {
     var writerSelected by rememberSaveable { mutableStateOf(true) }
     Scaffold(bottomBar = {
         NavBar(
+            modifier = Modifier
+                .background(MaterialTheme.colors.primarySurface)
+                .windowInsetsPadding(WindowInsets.navigationBars),
             writerSelected = writerSelected,
             setWriterSelected = { writerSelected = it })
     }) {
@@ -89,8 +99,8 @@ fun NormalState() {
 }
 
 @Composable
-fun NavBar(writerSelected: Boolean, setWriterSelected: (Boolean) -> Unit) {
-    BottomNavigation(Modifier.fillMaxWidth()) {
+fun NavBar(modifier: Modifier, writerSelected: Boolean, setWriterSelected: (Boolean) -> Unit) {
+    BottomNavigation(modifier.fillMaxWidth(), elevation = 0.dp) {
         BottomNavigationItem(
             selected = writerSelected,
             onClick = { setWriterSelected(true) },
