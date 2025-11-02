@@ -60,7 +60,6 @@ fun CameraView(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT
                     )
-                    println("DSGFFDGDFG width &h = ${this.width}")
                     scaleType = PreviewView.ScaleType.FIT_CENTER
                     implementationMode = PreviewView.ImplementationMode.PERFORMANCE
 
