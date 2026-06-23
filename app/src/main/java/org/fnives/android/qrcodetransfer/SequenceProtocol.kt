@@ -26,10 +26,10 @@ object SequenceProtocol {
     private val reader by lazy { QRCodeReader() }
     private val maxSizeMap = mutableMapOf<Int, Int>()
     private val maxSize get() = maxSizeMap[versionCode] ?: findMaxSize().also { maxSizeMap[versionCode] = it }
-    private val formatCurrent = 'C'
-    private val formatLength = 'L'
-    private val formatPrefix = "S://"
-    private val format = "${formatPrefix}${formatCurrent}${formatLength}"
+    private const val FORMAT_CURRENT = 'C'
+    private const val FORMAT_LENGTH = 'L'
+    private const val FORMAT_PREFIX = "S://"
+    private const val FORMAT = "${FORMAT_PREFIX}${FORMAT_CURRENT}${FORMAT_LENGTH}"
     var versionCode: Int = 4
         set(value) {
             field = max(min(value, validVersionCodes.last), validVersionCodes.first)
@@ -45,11 +45,11 @@ object SequenceProtocol {
             return listOf(encode(message))
         }
 
-        val contentThatFits = (maxSize - format.length)
+        val contentThatFits = (maxSize - FORMAT.length)
         val chunks = message.chunked(contentThatFits)
-        val formatWithLength = format.replace(formatLength, chunks.size.toChar())
+        val formatWithLength = FORMAT.replace(FORMAT_LENGTH, chunks.size.toChar())
         val messages = chunks.mapIndexed { index, s ->
-            val prefix = formatWithLength.replace(formatCurrent, index.toChar())
+            val prefix = formatWithLength.replace(FORMAT_CURRENT, index.toChar())
             "${prefix}${s}"
         }
         return messages.map {
@@ -61,11 +61,11 @@ object SequenceProtocol {
     fun read(binaryBitmap: BinaryBitmap): ReadResult? {
         val result = decode(binaryBitmap) ?: return null
 
-        if (!result.text.startsWith(formatPrefix)) {
+        if (!result.text.startsWith(FORMAT_PREFIX)) {
             return ReadResult(SequenceInfo.NotSequence(base64Decode(result.text)), result)
         }
 
-        val remaining = result.text.drop(formatPrefix.length)
+        val remaining = result.text.drop(FORMAT_PREFIX.length)
         val current = remaining[0]
         val length = remaining[1]
         val content = base64Decode(remaining.drop(2))
@@ -129,7 +129,7 @@ object SequenceProtocol {
         while (maxLength == null) {
             try {
                 encode(msg.toString())
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
                 maxLength = msg.length
             }
             msg.append("a")
@@ -145,7 +145,7 @@ object SequenceProtocol {
     // whether we are dealing with normal QR Code or "sequenced" one
     sealed interface SequenceInfo {
 
-        abstract val content: String
+        val content: String
 
         data class NotSequence(override val content: String) : SequenceInfo
         data class SequenceElement(
